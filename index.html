@@ -3,283 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Translation Cost Estimator</title>
+    <title>MK's Translation Playground</title>
     <style>
+        /* -----------------------------------------------------------
+           THEME CONFIGURATION
+           Change these colors to match your screenshot!
+           ----------------------------------------------------------- */
         :root {
-            /* Professional Color Palette */
-            --header-bg: #1a252f;
-            --header-text: #ffffff;
-            --accent: #2980b9;
-            --bg-color: #f5f7fa;
-            --card-bg: #ffffff;
-            --border-color: #e1e4e8;
-            --text-dark: #2c3e50;
+            /* Primary Brand Color (Button & Highlights) */
+            --primary-color: #4F46E5; /* Indigo */
+            --primary-hover: #4338ca;
+            
+            /* Background Colors */
+            --app-background: #F3F4F6; /* Light Gray */
+            --card-background: #ffffff;
+            
+            /* Text Colors */
+            --text-heading: #111827;
+            --text-body: #374151;
+            --text-muted: #6B7280;
+            
+            /* Borders & Accents */
+            --border-radius: 12px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--app-background);
+            color: var(--text-body);
+            display: flex;
+            justify-content: center;
             padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 800px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 20px;
         }
 
-        /* Main Container */
-        .app-container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
+        /* --- Header & Transparency Section --- */
+        .info-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            border-left: 6px solid var(--primary-color);
         }
 
-        /* Header Section */
-        header {
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        /* Transparency Table Section */
-        .rate-card {
-            background-color: #ebf3f9;
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .rate-card h3 {
+        .info-card h2 {
             margin-top: 0;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #57606f;
-            text-align: center;
+            color: var(--text-heading);
+            font-size: 1.25rem;
             margin-bottom: 15px;
         }
 
-        table.rates-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            background: #fff;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        .rate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
 
-        table.rates-table th, table.rates-table td {
+        .rate-box {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
             padding: 10px;
+            border-radius: 8px;
             text-align: center;
-            border-bottom: 1px solid #eee;
         }
 
-        table.rates-table th {
-            background-color: var(--accent);
-            color: white;
-            font-weight: 500;
+        .rate-box strong {
+            display: block;
+            color: var(--primary-color);
+            margin-bottom: 4px;
         }
 
-        table.rates-table tr:last-child td {
-            border-bottom: none;
+        .rate-box span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
 
-        /* Calculator Input Section */
-        .calculator-body {
+        /* --- Calculator Section --- */
+        .calculator-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             padding: 30px;
         }
 
-        .form-group {
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
+        /* Make full width on mobile */
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
         label {
-            display: block;
-            margin-bottom: 8px;
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: var(--text-muted);
         }
 
         select, input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border: 1px solid #D1D5DB;
             border-radius: 6px;
             font-size: 1rem;
-            box-sizing: border-box; /* Ensures padding doesn't break width */
-            transition: border-color 0.2s;
+            background: #fff;
+            transition: ring 0.2s;
         }
 
         select:focus, input:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--accent);
+        button.calculate-btn {
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 10px;
+            width: 100%;
+            transition: background 0.2s, transform 0.1s;
         }
 
-        button:hover {
-            background-color: #1f6391;
+        button.calculate-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        button.calculate-btn:active {
+            transform: scale(0.98);
         }
 
-        /* Results Section */
-        .results {
-            margin-top: 30px;
-            background: #f8f9fa;
-            border-radius: 6px;
+        /* --- Results Section --- */
+        .results-container {
+            margin-top: 25px;
+            background: #eff6ff; /* Very light blue */
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
             padding: 20px;
-            border: 1px solid #e9ecef;
             display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        .result-row {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .line-item {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
+            border-bottom: 1px dashed #cbd5e1;
             font-size: 0.95rem;
-            color: #555;
         }
 
-        .result-row.total {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: var(--text-dark);
-            border-top: 2px solid #ddd;
-            margin-top: 10px;
-            padding-top: 15px;
+        .line-item:last-of-type {
+            border-bottom: none;
         }
 
-        .price-tag {
-            font-family: 'Courier New', Courier, monospace;
+        .line-item span:first-child {
+            color: var(--text-muted);
+        }
+
+        .line-item span:last-child {
+            font-weight: 600;
+            font-family: monospace;
+            color: var(--text-heading);
+        }
+
+        .final-total {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
             font-weight: bold;
         }
 
-        .sub-text {
-            font-size: 0.85rem;
-            color: #7f8c8d;
+        .unit-price {
             text-align: right;
-            margin-top: 5px;
-            font-style: italic;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            color: var(--text-muted);
         }
+
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <h2>Translation Pricing Calculator</h2>
-    </header>
-
-    <div class="rate-card">
-        <h3>Transparency: Base Translator Rates</h3>
-        <table class="rates-table">
-            <thead>
-                <tr>
-                    <th>Level</th>
-                    <th>Per Word</th>
-                    <th>Per Minute</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Level 1</strong></td>
-                    <td>$0.10</td>
-                    <td>$5.00</td>
-                </tr>
-                <tr>
-                    <td><strong>Level 2</strong></td>
-                    <td>$0.13</td>
-                    <td>$6.50</td>
-                </tr>
-                <tr>
-                    <td><strong>Level 3</strong></td>
-                    <td>$0.15</td>
-                    <td>$7.50</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="calculator-body">
-        <div class="form-group">
-            <label for="modelType">Select Pricing Model</label>
-            <select id="modelType" onchange="updateLabels()">
-                <option value="word">Per Word Model</option>
-                <option value="minute">Per Minute Model</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label id="quantityLabel" for="quantity">Word Count</label>
-            <input type="number" id="quantity" placeholder="0" min="1">
-        </div>
-
-        <div class="form-group">
-            <label for="level">Select Difficulty Level</label>
-            <select id="level">
-                <option value="1">Level 1 (Standard)</option>
-                <option value="2">Level 2 (Technical/Complex)</option>
-                <option value="3">Level 3 (Specialized)</option>
-            </select>
-        </div>
-
-        <button onclick="calculate()">Calculate Job Estimate</button>
-
-        <div class="results" id="resultsArea">
-            <div class="result-row">
-                <span>Translator 1 Cost:</span>
-                <span id="resT1" class="price-tag"></span>
+<div class="main-wrapper">
+    
+    <div class="info-card">
+        <h2>Base Translator Rates</h2>
+        <div class="rate-grid">
+            <div class="rate-box">
+                <strong>Level 1</strong>
+                <span>$0.10 / word</span><br>
+                <span>$5.00 / min</span>
             </div>
-            <div class="result-row">
-                <span>Translator 2 Cost:</span>
-                <span id="resT2" class="price-tag"></span>
+            <div class="rate-box">
+                <strong>Level 2</strong>
+                <span>$0.13 / word</span><br>
+                <span>$6.50 / min</span>
             </div>
-            <div class="result-row">
-                <span><strong>Total Labor Cost:</strong></span>
-                <span id="resLabor" class="price-tag"></span>
+            <div class="rate-box">
+                <strong>Level 3</strong>
+                <span>$0.15 / word</span><br>
+                <span>$7.50 / min</span>
             </div>
-            <div class="result-row">
-                <span>Overhead (30%):</span>
-                <span id="resOverhead" class="price-tag"></span>
-            </div>
-            <div class="result-row">
-                <span>Profit (50% markup):</span>
-                <span id="resProfit" class="price-tag"></span>
-            </div>
-            <div class="result-row total">
-                <span>Job Total:</span>
-                <span id="resTotal"></span>
-            </div>
-            <div class="sub-text" id="resPerUnit"></div>
         </div>
     </div>
+
+    <div class="calculator-card">
+        <div class="form-grid">
+            <div class="input-group">
+                <label for="modelType">Pricing Model</label>
+                <select id="modelType" onchange="updateLabels()">
+                    <option value="word">Per Word</option>
+                    <option value="minute">Per Minute (Video)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="level">Complexity Level</label>
+                <select id="level">
+                    <option value="1">Level 1 (Standard)</option>
+                    <option value="2">Level 2 (Technical)</option>
+                    <option value="3">Level 3 (Specialized)</option>
+                </select>
+            </div>
+
+            <div class="input-group full-width">
+                <label id="quantityLabel" for="quantity">Word Count</label>
+                <input type="number" id="quantity" placeholder="Enter count..." min="1">
+            </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculate()">Calculate Estimate</button>
+
+        <div id="results" class="results-container">
+            <div class="line-item">
+                <span>Translator 1 Quote</span>
+                <span id="resT1">$0.00</span>
+            </div>
+            <div class="line-item">
+                <span>Translator 2 Quote</span>
+                <span id="resT2">$0.00</span>
+            </div>
+            <div class="line-item" style="background-color: rgba(0,0,0,0.03); padding-left:5px; padding-right:5px;">
+                <span><strong>Total Labor</strong></span>
+                <span id="resLabor">$0.00</span>
+            </div>
+            <div class="line-item">
+                <span>Overhead (30%)</span>
+                <span id="resOverhead">$0.00</span>
+            </div>
+            <div class="line-item">
+                <span>Profit Markup (50%)</span>
+                <span id="resProfit">$0.00</span>
+            </div>
+
+            <div class="final-total">
+                <span>Total Estimate</span>
+                <span id="resTotal">$0.00</span>
+            </div>
+            <div class="unit-price" id="resPerUnit"></div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    // Data Configuration
     const rates = {
         word: { 1: 0.10, 2: 0.13, 3: 0.15 },
         minute: { 1: 5.00, 2: 6.50, 3: 7.50 }
@@ -288,15 +315,8 @@
     function updateLabels() {
         const type = document.getElementById('modelType').value;
         const label = document.getElementById('quantityLabel');
-        const input = document.getElementById('quantity');
-        
-        if (type === 'word') {
-            label.textContent = "Word Count";
-            input.placeholder = "e.g. 500";
-        } else {
-            label.textContent = "Video Duration (Minutes)";
-            input.placeholder = "e.g. 10";
-        }
+        if (type === 'word') label.textContent = "Word Count";
+        else label.textContent = "Video Duration (Minutes)";
     }
 
     function formatMoney(amount) {
@@ -309,33 +329,33 @@
         const level = document.getElementById('level').value;
 
         if (!qty || qty <= 0) {
-            alert("Please enter a valid amount greater than 0.");
+            alert("Please enter a valid quantity.");
             return;
         }
 
-        // Logic
         const rate = rates[type][level];
-        const translator1Quote = qty * rate;
-        const translator2Quote = qty * rate; 
-        const totalLabor = translator1Quote + translator2Quote;
-        const overhead = totalLabor * 0.30;
-        const costBasis = totalLabor + overhead;
-        const profit = costBasis * 0.50;
-        const jobTotal = totalLabor + overhead + profit;
-        const pricePerUnit = jobTotal / qty;
+        
+        // Calculations
+        const t1 = qty * rate;
+        const t2 = qty * rate;
+        const labor = t1 + t2;
+        const overhead = labor * 0.30;
+        const profit = (labor + overhead) * 0.50;
+        const total = labor + overhead + profit;
+        const perUnit = total / qty;
 
-        // Display
-        document.getElementById('resT1').textContent = formatMoney(translator1Quote);
-        document.getElementById('resT2').textContent = formatMoney(translator2Quote);
-        document.getElementById('resLabor').textContent = formatMoney(totalLabor);
+        // Render
+        document.getElementById('resT1').textContent = formatMoney(t1);
+        document.getElementById('resT2').textContent = formatMoney(t2);
+        document.getElementById('resLabor').textContent = formatMoney(labor);
         document.getElementById('resOverhead').textContent = formatMoney(overhead);
         document.getElementById('resProfit').textContent = formatMoney(profit);
-        document.getElementById('resTotal').textContent = formatMoney(jobTotal);
+        document.getElementById('resTotal').textContent = formatMoney(total);
         
-        const unitLabel = type === 'word' ? 'word' : 'minute';
-        document.getElementById('resPerUnit').textContent = `Customer Price per ${unitLabel}: ${formatMoney(pricePerUnit)}`;
+        const unitText = type === 'word' ? 'word' : 'minute';
+        document.getElementById('resPerUnit').textContent = `Price per ${unitText}: ${formatMoney(perUnit)}`;
 
-        document.getElementById('resultsArea').style.display = 'block';
+        document.getElementById('results').style.display = 'block';
     }
 </script>
 
