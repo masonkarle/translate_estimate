@@ -6,214 +6,325 @@
     <title>Translation Cost Estimator</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --bg: #f4f7f6;
-            --card: #ffffff;
+            /* Professional Color Palette */
+            --header-bg: #1a252f;
+            --header-text: #ffffff;
+            --accent: #2980b9;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --border-color: #e1e4e8;
+            --text-dark: #2c3e50;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .container {
-            background: var(--card);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+        /* Main Container */
+        .app-container {
+            background-color: var(--card-bg);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
         }
-        h2 {
-            margin-top: 0;
+
+        /* Header Section */
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 20px;
             text-align: center;
-            color: var(--primary);
         }
+
+        header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Transparency Table Section */
+        .rate-card {
+            background-color: #ebf3f9;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .rate-card h3 {
+            margin-top: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #57606f;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        table.rates-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        table.rates-table th, table.rates-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        table.rates-table th {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 500;
+        }
+
+        table.rates-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Calculator Input Section */
+        .calculator-body {
+            padding: 30px;
+        }
+
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
+
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
             font-weight: 600;
             font-size: 0.9rem;
+            color: var(--text-dark);
         }
+
         select, input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 12px;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 1rem;
-            box-sizing: border-box; 
+            box-sizing: border-box; /* Ensures padding doesn't break width */
+            transition: border-color 0.2s;
         }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
         button {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background-color: var(--accent);
             color: white;
             border: none;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            font-weight: bold;
+            margin-top: 10px;
         }
+
         button:hover {
-            background-color: #2980b9;
+            background-color: #1f6391;
         }
+
+        /* Results Section */
         .results {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 2px solid #eee;
+            margin-top: 30px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
             display: none; /* Hidden by default */
         }
+
         .result-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
             font-size: 0.95rem;
+            color: #555;
         }
+
         .result-row.total {
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-top: 1px dashed #ccc;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            border-top: 2px solid #ddd;
             margin-top: 10px;
             padding-top: 15px;
-            color: var(--accent);
         }
+
+        .price-tag {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+
         .sub-text {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #7f8c8d;
             text-align: right;
+            margin-top: 5px;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Translation Estimator</h2>
-    
-    <div class="form-group">
-        <label for="modelType">Pricing Model</label>
-        <select id="modelType" onchange="updateLabels()">
-            <option value="word">Per Word Model</option>
-            <option value="minute">Per Minute Model</option>
-        </select>
+<div class="app-container">
+    <header>
+        <h2>Translation Pricing Calculator</h2>
+    </header>
+
+    <div class="rate-card">
+        <h3>Transparency: Base Translator Rates</h3>
+        <table class="rates-table">
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Per Word</th>
+                    <th>Per Minute</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Level 1</strong></td>
+                    <td>$0.10</td>
+                    <td>$5.00</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 2</strong></td>
+                    <td>$0.13</td>
+                    <td>$6.50</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 3</strong></td>
+                    <td>$0.15</td>
+                    <td>$7.50</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="form-group">
-        <label id="quantityLabel" for="quantity">Word Count</label>
-        <input type="number" id="quantity" placeholder="Enter amount..." min="1">
-    </div>
+    <div class="calculator-body">
+        <div class="form-group">
+            <label for="modelType">Select Pricing Model</label>
+            <select id="modelType" onchange="updateLabels()">
+                <option value="word">Per Word Model</option>
+                <option value="minute">Per Minute Model</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="level">Difficulty Level</label>
-        <select id="level">
-            <option value="1">Level 1 (Standard)</option>
-            <option value="2">Level 2 (Technical/Complex)</option>
-            <option value="3">Level 3 (Specialized)</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label id="quantityLabel" for="quantity">Word Count</label>
+            <input type="number" id="quantity" placeholder="0" min="1">
+        </div>
 
-    <button onclick="calculate()">Calculate Estimate</button>
+        <div class="form-group">
+            <label for="level">Select Difficulty Level</label>
+            <select id="level">
+                <option value="1">Level 1 (Standard)</option>
+                <option value="2">Level 2 (Technical/Complex)</option>
+                <option value="3">Level 3 (Specialized)</option>
+            </select>
+        </div>
 
-    <div class="results" id="resultsArea">
-        <div class="result-row">
-            <span>Translator 1 Quote:</span>
-            <span id="resT1"></span>
+        <button onclick="calculate()">Calculate Job Estimate</button>
+
+        <div class="results" id="resultsArea">
+            <div class="result-row">
+                <span>Translator 1 Cost:</span>
+                <span id="resT1" class="price-tag"></span>
+            </div>
+            <div class="result-row">
+                <span>Translator 2 Cost:</span>
+                <span id="resT2" class="price-tag"></span>
+            </div>
+            <div class="result-row">
+                <span><strong>Total Labor Cost:</strong></span>
+                <span id="resLabor" class="price-tag"></span>
+            </div>
+            <div class="result-row">
+                <span>Overhead (30%):</span>
+                <span id="resOverhead" class="price-tag"></span>
+            </div>
+            <div class="result-row">
+                <span>Profit (50% markup):</span>
+                <span id="resProfit" class="price-tag"></span>
+            </div>
+            <div class="result-row total">
+                <span>Job Total:</span>
+                <span id="resTotal"></span>
+            </div>
+            <div class="sub-text" id="resPerUnit"></div>
         </div>
-        <div class="result-row">
-            <span>Translator 2 Quote:</span>
-            <span id="resT2"></span>
-        </div>
-        <div class="result-row">
-            <span><strong>Total Labor:</strong></span>
-            <span id="resLabor"></span>
-        </div>
-        <div class="result-row">
-            <span>Overhead (30%):</span>
-            <span id="resOverhead"></span>
-        </div>
-        <div class="result-row">
-            <span>Profit (50% markup):</span>
-            <span id="resProfit"></span>
-        </div>
-        <div class="result-row total">
-            <span>Job Total:</span>
-            <span id="resTotal"></span>
-        </div>
-        <div class="sub-text" id="resPerUnit"></div>
     </div>
 </div>
 
 <script>
-    // Configuration based on CSV Data
+    // Data Configuration
     const rates = {
-        word: {
-            1: 0.10,
-            2: 0.13,
-            3: 0.15
-        },
-        minute: {
-            1: 5.00,
-            2: 6.50,
-            3: 7.50
-        }
+        word: { 1: 0.10, 2: 0.13, 3: 0.15 },
+        minute: { 1: 5.00, 2: 6.50, 3: 7.50 }
     };
 
     function updateLabels() {
         const type = document.getElementById('modelType').value;
         const label = document.getElementById('quantityLabel');
+        const input = document.getElementById('quantity');
+        
         if (type === 'word') {
             label.textContent = "Word Count";
+            input.placeholder = "e.g. 500";
         } else {
             label.textContent = "Video Duration (Minutes)";
+            input.placeholder = "e.g. 10";
         }
     }
 
     function formatMoney(amount) {
-        return '$' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        return '$' + amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 
     function calculate() {
-        // 1. Get Inputs
         const type = document.getElementById('modelType').value;
         const qty = parseFloat(document.getElementById('quantity').value);
         const level = document.getElementById('level').value;
 
         if (!qty || qty <= 0) {
-            alert("Please enter a valid quantity.");
+            alert("Please enter a valid amount greater than 0.");
             return;
         }
 
-        // 2. Get Rate
+        // Logic
         const rate = rates[type][level];
-
-        // 3. Calculate Logic (Matches CSV formulas)
-        
-        // Labor
         const translator1Quote = qty * rate;
-        const translator2Quote = qty * rate; // CSV implies 2 translators per job
+        const translator2Quote = qty * rate; 
         const totalLabor = translator1Quote + translator2Quote;
-
-        // Overhead (30% of Labor)
         const overhead = totalLabor * 0.30;
-
-        // Profit (50% of (Labor + Overhead))
         const costBasis = totalLabor + overhead;
         const profit = costBasis * 0.50;
-
-        // Totals
         const jobTotal = totalLabor + overhead + profit;
         const pricePerUnit = jobTotal / qty;
 
-        // 4. Update UI
+        // Display
         document.getElementById('resT1').textContent = formatMoney(translator1Quote);
         document.getElementById('resT2').textContent = formatMoney(translator2Quote);
         document.getElementById('resLabor').textContent = formatMoney(totalLabor);
